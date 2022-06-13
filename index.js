@@ -1,18 +1,19 @@
 import 'dotenv/config';
-import express from 'express';
 import "./database/db.js";
+import cookieParser from 'cookie-parser';
+import express from 'express';
+
 import authRouter from './routes/authRouter.js';
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+
 app.use("/api/v1", authRouter);
 
-const PORT = process.env.PORT;
-app.listen(5000, () => console.log("http://localhost:"+PORT));
+const PORT = process.env.PORT || 3000;
 
-app.get("/" , (req,res) => {
-     res.json("umpalumbalapapaaaa");
- }
- )
+app.listen(PORT, () => console.log("🔥🔥🔥 http://localhost:" + PORT));
+
 

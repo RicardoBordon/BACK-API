@@ -3,6 +3,13 @@ import mongoose from "mongoose";
 
 //Modelo Creación de Usuarios
 const userSchema = new mongoose.Schema({
+    // username: {
+    //     type: String,
+    //     required: true,
+    //     trim: true,
+    //     unique: true,
+    //     index: {unique: true}
+    // },
     email: {
         type: String,
         required: true,
@@ -15,6 +22,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true, 
     },
+    // profileimag: {
+    //     type: String,
+    // }
 });
 
 //Hash de contraseña 
