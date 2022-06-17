@@ -1,18 +1,21 @@
 import { User } from "../models/user.js";
 import { generateRefreshToken, generateToken } from "../helpers/generateToken.js";
+import { confirmEmail, validationEmail } from "../middlewares/ValidationMail.js";
 
 //Registro de usuarios
 export const register = async(req, res) => {
-    const {email, password} = req.body;
+    const {name, lastName, dni, phone, email, password} = req.body;
     try {
-        const user= new User({email, password});
-        await user.save();
-        
+        const user= new User({name, lastName, dni, phone, email, password});
         //jwt token, generación token
         const {token, expiresIn} = generateToken(user.id);
         generateRefreshToken(user.id, res);
+        validationEmail(user.email, token);
+        user.verifiedToken = token;
 
-
+        await user.save();
+        console.log(token);
+        
         return res.status(201).json({ok: "guardado en db", token, expiresIn});
     } catch (error) {
         console.log(error);

@@ -3,13 +3,7 @@ import mongoose from "mongoose";
 
 //Modelo Creación de Usuarios
 const userSchema = new mongoose.Schema({
-    // username: {
-    //     type: String,
-    //     required: true,
-    //     trim: true,
-    //     unique: true,
-    //     index: {unique: true}
-    // },
+
     email: {
         type: String,
         required: true,
@@ -18,13 +12,41 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         index: {unique: true},
     },
+
+    name: {
+        type: String,
+        required: true,
+        lowercase: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+        lowercase: true,
+    },
+    dni: {
+        type: Number,
+        required: true,
+    },
+    phone: {
+        type: Number,
+        required: true,
+    },
+
     password: {
         type: String,
         required: true, 
     },
-    // profileimag: {
-    //     type: String,
-    // }
+
+    verifiedToken: {
+        type: String,
+        default: null,
+    },
+
+    verifiedOk: {
+        type: Boolean,
+        default: false,
+    }
+
 });
 
 //Hash de contraseña 
