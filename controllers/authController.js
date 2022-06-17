@@ -34,12 +34,14 @@ export const login = async(req, res) => {
         let user = await User.findOne({email});
 
         if(!user) return res.status(403).json({error: "No existe el usuario"});
-
+        
         //Con mongoose obtener un booleano en caso de encontrar la password hasheada    
         const resPassword = await user.comparePassword(password);
         if(!resPassword){
             return res.status(403).json({error: "Contraseña incorrecta"});
         }
+
+        if(!user.verifiedOk) return res.status(403).json({error: "Cuenta de correo no confirmada"})
         
         // Generar el token JWT
         const { token, expiresIn } = generateToken(user.id);
