@@ -8,6 +8,7 @@ import authRouter from './routes/authRouter.js';
 import productRoutes from './routes/productRouter.js'; 
 import path from 'path';
 import multer from 'multer';
+import cloudinary  from 'cloudinary';
 
 const app = express();
 
@@ -26,6 +27,14 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({extended: false}));
+
+cloudinary.config({ 
+    cloud_name : process.env.CLUD_NAME , 
+    api_key : process.env.API_KEY , 
+    api_secret : process.env.API_SECRET ,
+    upload_preset: process.env.UPLOAD_PRESET,
+    seguro : process.env.SEG  
+ });
 
     const storage = multer.diskStorage({
     destination: path.join("public/uploads"),

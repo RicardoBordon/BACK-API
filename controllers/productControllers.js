@@ -1,16 +1,5 @@
 import { Product } from "../models/product.js";
-import util from "util";
-import cloudinary  from 'cloudinary'
-import multer from "multer";
-import express from "express";
-
-cloudinary.config({ 
-    cloud_name : process.env.CLUD_NAME , 
-    api_key : process.env.API_KEY , 
-    api_secret : process.env.API_SECRET ,
-    upload_preset: process.env.UPLOAD_PRESET,
-    seguro : process.env.SEG  
- });
+import { destroyImage } from "../helpers/destroyImage.js";
 
 //CREAR PRODUCTO
 export const createProduct = async(req, res) => {
@@ -27,11 +16,8 @@ export const createProduct = async(req, res) => {
     return res.status(201).json({ok: "guardado en db"});
         
     } catch (error) {
-
-        console.log(error._message);
-        const imgID =  image.split("/").pop().split(".")[0];  
-        cloudinary.uploader.destroy(imgID, async (error, result) => { console.log(result, error) });
-
+      console.log(error);
+      destroyImage(image);
     }
 };
 
@@ -43,7 +29,15 @@ export const updateProduct = async(req, res) => {
       if (product) {
         product.item = item || product.item;
         product.name = name || product.name;
-        product.image = image || product.image;
+
+        if(product.image === image){
+          product.image = product.image;
+        }
+        else{
+          product.image = image
+          destroyImage(product.image);
+        }
+        
         product.description = description || product.description;
         product.price = price || product.price;
         product.cstock = cstock || product.cstock;
@@ -87,3 +81,14 @@ export const allProducts = async (req, res) => {
     }
 }
 
+//MOSTRAR UN PRODUCTO
+
+export const singleProduct = async (req, res) => {
+  try {
+    const product = await Product.find({item: req.params.item});
+    console.log(product);    
+    return res.json(product);
+  } catch (error) {
+    console.error;
+  }
+}
