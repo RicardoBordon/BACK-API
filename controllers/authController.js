@@ -1,5 +1,5 @@
 import { User } from "../models/user.js";
-import { generateRefreshToken, generateToken } from "../helpers/generateToken.js";
+import { generateToken, generateRefreshToken, generateTokenAdmin } from "../helpers/generateToken.js";
 import { confirmEmail, validationEmail } from "../middlewares/ValidationMail.js";
 
 //Registro de usuarios
@@ -14,7 +14,6 @@ export const register = async(req, res) => {
         user.verifiedToken = token;
 
         await user.save();
-        console.log(token);
         
         return res.status(201).json({ok: "guardado en db", token, expiresIn});
     } catch (error) {
@@ -30,11 +29,12 @@ export const register = async(req, res) => {
 export const login = async(req, res) => {
     try {
         const {email, password} = req.body;
+         
         //Buscar con metodos de mongoose el Email en la db
         let user = await User.findOne({email});
-
-        if(!user) return res.status(403).json({error: "No existe el usuario"});
+        if(!user)return res.status(403).json({error: "No existe el usuario"});     
         
+
         //Con mongoose obtener un booleano en caso de encontrar la password hasheada    
         const resPassword = await user.comparePassword(password);
         if(!resPassword){
@@ -43,27 +43,24 @@ export const login = async(req, res) => {
 
         if(!user.verifiedOk) return res.status(403).json({error: "Cuenta de correo no confirmada"})
         
+        if(email !== process.env.ADMIN && password !== process.env.PASSADMIN){
         // Generar el token JWT
         const { token, expiresIn } = generateToken(user.id);
         generateRefreshToken(user.id, res);
-
-        return res.json({token, expiresIn});
         
+        return res.json({token, expiresIn});
+    }
+    else{
+        const { tokenAdmin, expiresIn } = generateTokenAdmin(user.id);
+        generateRefreshToken(user.id, res);
+        return res.json({tokenAdmin, expiresIn});
+    }
+    
     } catch (error) {
         console.log(error);
         return res.status(500).json({error: "Servidor no econtrado"});
     }
 };
-
-export const infoUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.uid);
-        
-        return res.json({ user });
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 export const refreshToken = (req, res) => {
     try {

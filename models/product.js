@@ -5,7 +5,6 @@ const productSchema = new mongoose.Schema({
     item: {
         type: Number,
         required: true,
-        default: 0
     },
 
     name: {
@@ -15,10 +14,12 @@ const productSchema = new mongoose.Schema({
 
     image: {
         type: String,
+        required: true,
     },
 
     description: {
         type: String,
+        required: true,
     },
 
     price: {

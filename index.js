@@ -1,3 +1,4 @@
+'use strict'
 import 'dotenv/config';
 import "./database/db.js";
 import cookieParser from 'cookie-parser';
@@ -16,6 +17,8 @@ app.use(cors());
 
 // const whiteList = [process.env.ORIGIN];
 
+//   app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+
 // app.use(cors({
 //     origin: function(origin, callback){
 //         if(whiteList.includes(origin)){
@@ -26,7 +29,7 @@ app.use(cors());
 // }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(urlencoded({extended: false}));
+app.use(urlencoded({extended: true}));
 
 cloudinary.config({ 
     cloud_name : process.env.CLUD_NAME , 
@@ -37,7 +40,7 @@ cloudinary.config({
  });
 
     const storage = multer.diskStorage({
-    destination: path.join("public/uploads"),
+    destination: path.join("/tmp/"),
     filename: (req, file, callback) => {
         callback(null, new Date().getTime() + path.extname(file.originalname) );
     }

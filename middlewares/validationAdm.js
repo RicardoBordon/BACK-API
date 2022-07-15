@@ -17,7 +17,7 @@ export const bodyRegisterValidator = [
         body("password", "password incorrecta")
         .trim()
         .isLength({min: 6}),
-        validationResultExpress 
+        validationResultExpress, 
     ];
 
 export const bodyLoginValidator = [

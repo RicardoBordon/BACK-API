@@ -3,7 +3,6 @@ import { User } from "../models/user.js";
 
 
 export const validationEmail = async (email, token) => { 
-
 //creo conexion con servidor de email smtp
 const transport = nodemailer.createTransport({
     host: process.env.ML_HOST,
@@ -26,22 +25,19 @@ const emailMsg = {
 }
 
 //envio mail con token
-console.log("aqui");
 await transport.sendMail(emailMsg);
 };
 
 export const confirmEmail = async (req, res) => {
 
   const {token} = req.params;
-  console.log(token);
   try {
      const user = await User.findOne({verifiedToken: token});
-     console.log(user);
      if(!user) throw new Error("No existe este usuario");
      user.verifiedOk = true;
      user.verifiedToken = null;   
      await user.save();
-     res.json(user);
+     res.json(user.email +": verificado correctamente");
      
   } catch (error) {
      res.json({ error: error.mesagge});
